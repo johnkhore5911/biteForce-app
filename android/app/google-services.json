@@ -1,0 +1,30 @@
+
+{
+  "project_info": {
+    "project_number": "321335914339",
+    "project_id": "chat-3859d",
+    "storage_bucket": "chat-3859d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:321335914339:android:1d14f5c9bce2cfc66e2d56",
+        "android_client_info": {
+          "package_name": "com.glove_dic"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7gKMbAXdHdHd6nWzz5CfIqMUwwhf3RVw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
