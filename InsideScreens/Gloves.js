@@ -1,103 +1,134 @@
-import React, { useEffect, useState } from 'react';
-import { Text, View, StatusBar, SafeAreaView, useColorScheme } from 'react-native';
-import { styles } from '../constants/styles';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import React, {useEffect, useState} from 'react';
+import {
+  Text,
+  View,
+  StatusBar,
+  SafeAreaView,
+  useColorScheme,
+  Button,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
 import BlSerial from 'react-native-bluetooth-serial';
+import firestore from '@react-native-firebase/firestore';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
-const Gloves = ({ route }) => {
-  // const { id, name } = route.params.data;
-  const [unilateralLeft, setUnilateralLeft] = useState("");
-  const [unilateralRight, setUnilateralRight] = useState("");
-  const [bilateralRight, setBilateralRight] = useState("");
-  const [bilateralLeft, setBilateralLeft] = useState("");
-  const [incisors, setIncisors] = useState("");
-  const isDarkMode = useColorScheme() === 'dark';
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
 
-  const delimiter = '\n'; // Define your delimiter here
-  let buffer = ''; // Buffer to accumulate data
+const Gloves = ({route}) => {
+  const {userId} = route.params; // Assuming userId is passed as a parameter
+  const [unilateralLeft, setUnilateralLeft] = useState([]);
+  const [unilateralRight, setUnilateralRight] = useState([]);
+  const [bilateralLeft, setBilateralLeft] = useState([]);
+  const [bilateralRight, setBilateralRight] = useState([]);
+  const [incisors, setIncisors] = useState([]);
+
+  const delimiter = '\n';
+  let buffer = '';
 
   const onLoad = async () => {
-    let isMounted = true; // Flag to handle component unmounting
+    let isMounted = true;
 
     while (isMounted) {
       const result = await BlSerial.readFromDevice();
-      if (result !== "" && result !== "0") { // Skip if result is empty or zero
-        buffer += result; // Accumulate data into the buffer
+      if (result !== '' && result !== '0') {
+        buffer += result;
 
         let delimiterIndex;
         while ((delimiterIndex = buffer.indexOf(delimiter)) !== -1) {
-          const completeData = buffer.substring(0, delimiterIndex); // Extract complete data
-          buffer = buffer.substring(delimiterIndex + 1); // Remove the processed data from the buffer
+          const completeData = buffer.substring(0, delimiterIndex);
+          buffer = buffer.substring(delimiterIndex + 1);
 
-          if (completeData !== "") {
-            console.log("Result: ", completeData);
+          if (completeData !== '') {
+            console.log('Result: ', completeData);
             const [mode, force] = completeData.split(': ');
             const parsedForce = parseFloat(force);
-            if (mode === "Unilateral Left") {
-              setUnilateralLeft(prev => prev ? `${prev}, ${parsedForce}` : `${parsedForce}`);
+            if (mode === 'Unilateral Left') {
+              setUnilateralLeft(prev => [...prev, parsedForce]);
             }
-            if (mode === "Unilateral Right") {
-              setUnilateralRight(prev => prev ? `${prev}, ${parsedForce}` : `${parsedForce}`);
+            if (mode === 'Unilateral Right') {
+              setUnilateralRight(prev => [...prev, parsedForce]);
             }
-            if (mode === "Bilateral Left") {
-              setBilateralLeft(prev => prev ? `${prev}, ${parsedForce}` : `${parsedForce}`);
+            if (mode === 'Bilateral Left') {
+              setBilateralLeft(prev => [...prev, parsedForce]);
             }
-            if (mode === "Bilateral Right") {
-              setBilateralRight(prev => prev ? `${prev}, ${parsedForce}` : `${parsedForce}`);
+            if (mode === 'Bilateral Right') {
+              setBilateralRight(prev => [...prev, parsedForce]);
             }
-            if (mode === "Incisors") {
-              setIncisors(prev => prev ? `${prev}, ${parsedForce}` : `${parsedForce}`);
+            if (mode === 'Incisors') {
+              setIncisors(prev => [...prev, parsedForce]);
             }
           }
         }
       }
     }
 
-    return () => { isMounted = false; }; // Cleanup function to handle unmounting
+    return () => {
+      isMounted = false;
+    };
+  };
+
+  const saveData = async () => {
+    try {
+      await firestore()
+        .collection('users')
+        .doc(userId)
+        .collection('slots')
+        .add({
+          bilateralLeft,
+          bilateralRight,
+          incisors,
+          unilateralLeft,
+          unilateralRight,
+        });
+      console.log('Data saved to Firestore!');
+    } catch (error) {
+      console.error('Error saving data: ', error);
+    }
+    navigation.goBack();
+    
   };
 
   useEffect(() => {
-    // console.log(id, "on gloves page");
     const cleanup = onLoad();
     return cleanup;
   }, []);
+  const navigation = useNavigation();
 
   return (
-    <SafeAreaView style={[backgroundStyle, styles.container]}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
+    <SafeAreaView style={styles.container}>
       <View>
-        <Text style={{ color: isDarkMode ? Colors.white : Colors.black }}>BiteForce</Text>
+        <Text style={styles.Heading}>
+          BiteForce
+        </Text>
         <View>
-          <Text style={{ color: isDarkMode ? Colors.white : Colors.black }}>
-            Unilateral Left: {unilateralLeft}
+          <Text style={styles.modeText}>
+            Unilateral Left: {unilateralLeft.join(', ')}
           </Text>
         </View>
         <View>
-          <Text style={{ color: isDarkMode ? Colors.white : Colors.black }}>
-            Unilateral Right: {unilateralRight}
+          <Text style={styles.modeText}>
+            Unilateral Right: {unilateralRight.join(', ')}
           </Text>
         </View>
         <View>
-          <Text style={{ color: isDarkMode ? Colors.white : Colors.black }}>
-            Bilateral Left: {bilateralLeft}
+          <Text style={styles.modeText}>
+            Bilateral Left: {bilateralLeft.join(', ')}
           </Text>
         </View>
         <View>
-          <Text style={{ color: isDarkMode ? Colors.white : Colors.black }}>
-            Bilateral Right: {bilateralRight}
+          <Text style={styles.modeText}>
+            Bilateral Right: {bilateralRight.join(', ')}
           </Text>
         </View>
         <View>
-          <Text style={{ color: isDarkMode ? Colors.white : Colors.black }}>
-            Incisors: {incisors}
+          <Text style={styles.modeText}>
+            Incisors: {incisors.join(', ')}
           </Text>
         </View>
+        <TouchableOpacity style={styles.button} onPress={saveData}>
+        <Text style={styles.buttonText}>Save Data</Text>
+      </TouchableOpacity>
+
       </View>
     </SafeAreaView>
   );
@@ -105,3 +136,35 @@ const Gloves = ({ route }) => {
 
 export default Gloves;
 
+const styles = StyleSheet.create({
+  container:{
+    flex: 1,
+    paddingTop:20,
+    padding:5,
+    // color:`black`,
+    backgroundColor: '#f2f3f5',
+  },
+  Heading:{
+    fontSize:20,
+    marginBottom:5,
+    fontWeight:`bold`
+  },
+  button: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#111',
+    borderRadius: 10,
+    position: 'relative',
+    marginBottom:10,
+    marginTop:10,
+    marginBottom:20
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+  },
+  modeText:{
+    fontSize:18,
+    
+  }
+})

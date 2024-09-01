@@ -1,140 +1,165 @@
 //toshow
-import React, { useState, useEffect } from "react";
-import 'react-native-gesture-handler'
-import { View, Text } from "react-native";
-import { NavigationContainer, DrawerActions, useNavigation } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createDrawerNavigator } from '@react-navigation/drawer'
+import React, {useState, useEffect} from 'react';
+import 'react-native-gesture-handler';
+import {View, Text} from 'react-native';
+import {
+  NavigationContainer,
+  DrawerActions,
+  useNavigation,
+} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 // import { Login, Signup, Welcome } from './screens/Index.js'
-import Login from './screens/Login.js'
-import Signup from './screens/Signup.js'
-import Welcome from "./screens/Welcome.js";
+import Login from './screens/Login.js';
+import Signup from './screens/Signup.js';
+import Welcome from './screens/Welcome.js';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import Home from "./screens/Home.js";
+import Home from './screens/Home.js';
 import Icon from 'react-native-vector-icons/Entypo';
-import COLORS from "./constants/Colors.js";
-import Techviz from "./InsideScreens/Techviz.js";
-import Gloves from "./InsideScreens/Gloves.js";
-import DrawerContent from "./InsideScreens/DrawerContent.js";
-import { DeviceList } from "./components/DeviceList.js";
-
-
+import COLORS from './constants/Colors.js';
+import Techviz from './InsideScreens/Techviz.js';
+import Gloves from './InsideScreens/Gloves.js';
+import DrawerContent from './InsideScreens/DrawerContent.js';
+import {DeviceList} from './components/DeviceList.js';
+import Main from './screens/Main.js';
+import UserDetails from './screens/UserDetails.js';
+import SlotGraph from './InsideScreens/SlotGraph.js';
 
 const InsideLayout = () => {
-  const InsideStack = createNativeStackNavigator()
-  const navigation = useNavigation()
+  const InsideStack = createNativeStackNavigator();
+  const navigation = useNavigation();
   const [initializing, setInitializing] = useState(true);
   const [userData, setUser] = useState([]);
   const [userState, setUserState] = useState(false);
-  const [email, setEmail] = useState('')
-  const [uid, setUid] = useState('')
+  const [email, setEmail] = useState('');
+  const [uid, setUid] = useState('');
 
-
-  const authChanged = (user) => {
-    setUser(user)
+  const authChanged = user => {
+    setUser(user);
     // console.log(user)
     if (user) {
       setUserState(true);
-
     }
     if (!user) {
       setUserState(false);
-
     }
     if (initializing) setInitializing(false);
-  }
+  };
 
   const check = () => {
     if (initializing) {
-      return null
+      return null;
     }
-    console.log(userState)
-  }
+    console.log(userState);
+  };
 
   useEffect(() => {
-    auth().onAuthStateChanged(authChanged)
+    auth().onAuthStateChanged(authChanged);
     if (userData) {
-      setUserState(true)
-      console.log(userState)
+      setUserState(true);
+      console.log(userState);
     }
-    check()
-  }, [])
+    check();
+  }, []);
 
   return (
     <InsideStack.Navigator
       screenOptions={{
-
         headerStyle: {
-          backgroundColor: "#fff",
+          backgroundColor: '#fff',
         },
         headerTitleStyle: {
-          color: '#208B81'
+          color: 'black',
         },
-        drawerStatusBarAnimation: "slide",
-        headerTintColor: "#208B81"
-      }}
-    >
+        drawerStatusBarAnimation: 'slide',
+        headerTintColor: '#208B81',
+      }}>
       {userState ? (
-        <><InsideStack.Screen
-          name="Home"
-          component={Home}
-          options={{
-            headerLeft: () => {
-              return (
-                <Icon
-                  name="menu"
-                  onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-                  size={30}
-                  color="#208B81"
-                />
-              );
-            },
-            headerTitleAlign: "center"
-          }}
-        /></>
-      ) : (<>
-        <InsideStack.Screen
-          name='Welcome'
-          component={Welcome}
-          options={{
-            headerShown: false,
-          }}
-        />
-      </>)}
+        <>
+          <InsideStack.Screen
+            name="Home"
+            //compoment is home so replace it later on
+            component={Home}
+            options={{
+              headerLeft: () => {
+                return (
+                  <Icon
+                    name="menu"
+                    onPress={() =>
+                      navigation.dispatch(DrawerActions.toggleDrawer())
+                    }
+                    size={30}
+                    color="black"
+                  />
+                );
+              },
+              headerTitleAlign: 'center',
+            }}
+          />
+        </>
+      ) : (
+        <>
+          <InsideStack.Screen
+            name="Welcome"
+            component={Welcome}
+            options={{
+              headerShown: false,
+            }}
+          />
+        </>
+      )}
 
       <InsideStack.Screen
-        name='Login'
+        name="Login"
         component={Login}
         options={{
-          headerShown: false
+          headerShown: false,
         }}
       />
       <InsideStack.Screen
-        name='Signup'
+        name="Signup"
         component={Signup}
         options={{
-          headerShown: false
+          headerShown: false,
         }}
       />
       <InsideStack.Screen
-        name='Techviz'
-        component={Techviz}
+        name="Main"
+        component={Main}
+        options={{
+          headerShown: false,
+        }}
       />
       <InsideStack.Screen
-        name='Gloves'
+        name="UserDetails"
+        component={UserDetails}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <InsideStack.Screen
+        name="SlotGraph"
+        component={SlotGraph}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <InsideStack.Screen name="Techviz" component={Techviz} />
+      <InsideStack.Screen
+        name="Gloves"
         component={Gloves}
+        options={{
+          headerShown: false,
+        }}
       />
-      <InsideStack.Screen
-        name='DeviceList'
-        component={DeviceList}
-      />
+      <InsideStack.Screen name="DeviceList" component={DeviceList} />
+    </InsideStack.Navigator>
+  );
+};
 
-    </InsideStack.Navigator >
-  )
-}
-
-const DrawerNav = (props) => {
+const DrawerNav = props => {
   // const [email, setEmail] = useState('')
   // const [username, setUsername] = useState('')
   // useEffect(() => {
@@ -163,7 +188,7 @@ const DrawerNav = (props) => {
 };
 
 function App() {
-  const Stack = createNativeStackNavigator()
+  const Stack = createNativeStackNavigator();
   return (
     <NavigationContainer>
       <DrawerNav />
@@ -171,4 +196,4 @@ function App() {
   );
 }
 
-export default App
+export default App;
