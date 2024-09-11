@@ -18,7 +18,7 @@ function LoginCheck() {
         // navigation.navigate('Main');
         try{
             const response = await axios.post(
-                "http://192.168.18.208:3000/api/v1/login",
+                "https://bite-force-server.vercel.app/api/v1/login",
                 {
                     email,
                     password,

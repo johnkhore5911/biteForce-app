@@ -785,7 +785,7 @@ const UserDetails = ({ route }) => {
   const fetchSlots = async () => {
     setLoading(true); // Show loader for slots
     try {
-      const response = await axios.post("http://192.168.18.208:3000/api/v1/getPatientSlot", {
+      const response = await axios.post("https://bite-force-server.vercel.app/api/v1/getPatientSlot", {
         PatientId: userDetails.item._id
       });
       setSlots(response.data.patients);

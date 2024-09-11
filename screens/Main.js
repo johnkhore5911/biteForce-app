@@ -209,7 +209,7 @@ const Main = () => {
 
   const fetchPatients = async () => {
     try {
-      const response = await axios.post("http://192.168.18.208:3000/api/v1/getPatients", { userId });
+      const response = await axios.post("https://bite-force-server.vercel.app/api/v1/getPatients", { userId });
       setUsers(response.data.patients);
     } catch (error) {
       console.error("Error while fetching patient data", error);
@@ -223,7 +223,7 @@ const Main = () => {
         const value = await AsyncStorage.getItem('token');
         if (value !== null) {
           setUserId(value);
-          const response = await axios.post("http://192.168.18.208:3000/api/v1/getPatients", { userId: value });
+          const response = await axios.post("https://bite-force-server.vercel.app/api/v1/getPatients", { userId: value });
           setUsers(response.data.patients);
         }
       } catch (e) {
@@ -238,7 +238,7 @@ const Main = () => {
     if (newUserName && newUserAge) {
       try {
         const response = await axios.post(
-          "http://192.168.18.208:3000/api/v1/createNewPatient",
+          "https://bite-force-server.vercel.app/api/v1/createNewPatient",
           { userId, PatientId: newUserId, name: newUserName, Age: newUserAge }
         );
         if (response.data.success) {

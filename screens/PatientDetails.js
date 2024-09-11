@@ -38,7 +38,7 @@ const PatientDetails = ({ route }) => {
   const fetchPatients = async () => {
     try {
       setLoading(true); // Set loading to true before fetching
-      const response = await axios.post("http://192.168.18.208:3000/api/v1/getPatientSlot", {
+      const response = await axios.post("https://bite-force-server.vercel.app/api/v1/getPatientSlot", {
         PatientId: userDetails.item._id
       });
       console.log("response.data.patients: ", response.data.patients);

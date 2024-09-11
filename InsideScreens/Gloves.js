@@ -453,7 +453,7 @@ const Gloves = ({ route }) => {
     const maxIncisors = incisors.length > 0 ? Math.max(...incisors) : 0;
 
     try {
-      const response = await axios.post("http://192.168.18.208:3000/api/v1/savePatientSlot", {
+      const response = await axios.post("https://bite-force-server.vercel.app/api/v1/savePatientSlot", {
         PatientId: userId,
         BilateralLeft: bilateralLeft,
         BilateralRight: bilateralRight,
@@ -477,7 +477,7 @@ const Gloves = ({ route }) => {
 
   const fetchPatientsDetails = async () => {
     try {
-      const response = await axios.post("http://192.168.18.208:3000/api/v1/getPatientDetails",
+      const response = await axios.post("https://bite-force-server.vercel.app/api/v1/getPatientDetails",
         { PatientId: userDetails.item._id }
       );
       console.log("This is the Updated Details of the Patient: ", response.data.patients);

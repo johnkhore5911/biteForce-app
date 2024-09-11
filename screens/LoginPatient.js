@@ -17,7 +17,7 @@ function LoginPatient({ navigation }) {
         // navigation.navigate("UserDetails");
         // Handle login logic here (e.g., authentication with Firebase)
         try{
-            const response = await axios.post("http://192.168.18.208:3000/api/v1/getPatientId",
+            const response = await axios.post("https://bite-force-server.vercel.app/api/v1/getPatientId",
                 {
                     PatientId:patientId,
                     name,
@@ -28,7 +28,7 @@ function LoginPatient({ navigation }) {
             console.log("User id is this -> ",response.data.UserId);
             
             try {
-              const response2 = await axios.post("http://192.168.18.208:3000/api/v1/getPatientDetails",
+              const response2 = await axios.post("https://bite-force-server.vercel.app/api/v1/getPatientDetails",
                 { PatientId: response.data.UserId }
               );
               console.log("This is the Updated Details of the Patient: ", response2.data.patients);

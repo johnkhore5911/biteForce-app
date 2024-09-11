@@ -19,7 +19,7 @@ function SignUpCheck() {
     const onSignup = async ()=>{
         try{
             const response = await axios.post(
-                "http://192.168.18.208:3000/api/v1/signup",
+                "https://bite-force-server.vercel.app/api/v1/signup",
                 {
                     name:username,
                     email,
