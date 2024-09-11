@@ -1,53 +1,45 @@
-import React, { useState } from 'react'
-import { View, Text, Image, Pressable, TextInput, TouchableOpacity } from 'react-native'
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, Pressable, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import COLORS from '../constants/Colors';
-import CheckBox from "react-native-checkbox"
+import CheckBox from "react-native-checkbox";
 import Button from '../components/Button.js';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
-
-function Signup({ navigation }) {
+function SignUpCheck() {
     const [isPasswordShown, setIsPasswordShown] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
     const [phno, setPhno] = useState('');
     const [username, setUsername] = useState('');
+    const navigation = useNavigation();
 
-    const onSignup = async () => {
-        await auth()
-            .createUserWithEmailAndPassword(email, pass)
-            .then(() => {
-                console.log('User account created & signed in!');
-                navigation.replace('Home')
-            })
-            .catch(error => {
-                if (error.code === 'auth/email-already-in-use') {
-                    console.log('That email address is already in use!');
+    const onSignup = async ()=>{
+        try{
+            const response = await axios.post(
+                "http://192.168.18.208:3000/api/v1/signup",
+                {
+                    name:username,
+                    email,
+                    mobileNumber:phno,
+                    password:pass,
                 }
-
-                if (error.code === 'auth/invalid-email') {
-                    console.log('That email address is invalid!');
-                }
-
-                console.error(error);
-            });
-        const user = auth().currentUser
-
-        await firestore()
-            .collection('Users')
-            .doc(user.uid)
-            .set({
-                Name: username,
-                Email: email,
-                Phone: phno
-            })
-            .then(() => {
-                console.log('User added!');
-            });
+            )
+            console.log("SignUp successfully",response.data);
+            console.warn(response.data);
+            if(response.data.success==true){
+                Alert.alert("Success! 🎉", "The User has been Created successfully. Welcome aboard!");
+                navigation.navigate("LoginScreen");
+            }
+    
+        }
+        catch(error){
+            console.error("Error during Sign Up",error);
+        }
     }
+
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
@@ -61,12 +53,12 @@ function Signup({ navigation }) {
                     }}>
                         Create Account
                     </Text>
-
                     <Text style={{
                         fontSize: 16,
                         color: "#222"
                     }}>Create a free account</Text>
                 </View>
+                {/* Existing form fields */}
                 <View style={{ marginBottom: 12 }}>
                     <Text style={{
                         color: "#000",
@@ -74,7 +66,6 @@ function Signup({ navigation }) {
                         fontWeight: 400,
                         marginVertical: 8
                     }}>Name</Text>
-
                     <View style={{
                         width: "100%",
                         height: 48,
@@ -104,7 +95,6 @@ function Signup({ navigation }) {
                         fontWeight: 400,
                         marginVertical: 8
                     }}>Email address</Text>
-
                     <View style={{
                         width: "100%",
                         height: 48,
@@ -135,7 +125,6 @@ function Signup({ navigation }) {
                         fontWeight: 400,
                         marginVertical: 8
                     }}>Mobile Number</Text>
-
                     <View style={{
                         width: "100%",
                         height: 48,
@@ -160,7 +149,6 @@ function Signup({ navigation }) {
                                 height: "100%"
                             }}
                         />
-
                         <TextInput
                             placeholder='Enter your phone number'
                             placeholderTextColor="#00000080"
@@ -181,7 +169,6 @@ function Signup({ navigation }) {
                         fontWeight: 400,
                         marginVertical: 8
                     }}>Password</Text>
-
                     <View style={{
                         width: "100%",
                         height: 48,
@@ -202,16 +189,13 @@ function Signup({ navigation }) {
                                 width: "100%"
                             }}
                         />
-
                         <TouchableOpacity
                             onPress={() => setIsPasswordShown(!isPasswordShown)}
                             style={{
                                 position: "absolute",
                                 right: 12
                             }}
-                        >
-
-                        </TouchableOpacity>
+                        />
                     </View>
                 </View>
 
@@ -226,8 +210,6 @@ function Signup({ navigation }) {
                         onValueChange={setIsChecked}
                         color={isChecked ? COLORS.primary : undefined}
                     />
-
-                    {/* <Text>I aggree to the terms and conditions</Text> */}
                 </View>
 
                 <Button
@@ -240,105 +222,15 @@ function Signup({ navigation }) {
                     }}
                 />
 
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 20 }}>
-                    <View
-                        style={{
-                            flex: 1,
-                            height: 1,
-                            backgroundColor: COLORS.grey,
-                            marginHorizontal: 10
-                        }}
-                    />
-                    <Text style={{ fontSize: 14, color: "#000" }}>Or Sign up with</Text>
-                    <View
-                        style={{
-                            flex: 1,
-                            height: 1,
-                            backgroundColor: COLORS.grey,
-                            marginHorizontal: 10
-                        }}
-                    />
-                </View>
-
-                <View style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center'
-                }}>
-                    <TouchableOpacity
-                        onPress={() => console.log("Pressed")}
-                        style={{
-                            flex: 1,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexDirection: 'row',
-                            height: 52,
-                            borderWidth: 1,
-                            borderColor: COLORS.grey,
-                            marginRight: 4,
-                            borderRadius: 10
-                        }}
-                    >
-                        <Image
-                            source={require("../Assets/facebook.png")}
-                            style={{
-                                height: 36,
-                                width: 36,
-                                marginRight: 8
-                            }}
-                            resizeMode='contain'
-                        />
-
-                        <Text style={{ color: "#000" }}>Facebook</Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 10 }}>
+                    <Text style={{ fontSize: 15, color: '#000' }}>Already have an account? </Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
+                        <Text style={{ color: COLORS.primary, fontSize: 15, fontWeight: 'bold' }}>Log In</Text>
                     </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress={() => console.log("Pressed")}
-                        style={{
-                            flex: 1,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexDirection: 'row',
-                            height: 52,
-                            borderWidth: 1,
-                            borderColor: COLORS.grey,
-                            marginRight: 4,
-                            borderRadius: 10
-                        }}
-                    >
-                        <Image
-                            source={require("../Assets/google.png")}
-                            style={{
-                                height: 36,
-                                width: 36,
-                                marginRight: 8
-                            }}
-                            resizeMode='contain'
-                        />
-
-                        <Text style={{ color: "#000" }}>Google</Text>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    marginVertical: 22
-                }}>
-                    <Text style={{ fontSize: 16, color: "#000" }}>Already have an account</Text>
-                    <Pressable
-                        onPress={() => navigation.navigate("Login")}
-                    >
-                        <Text style={{
-                            fontSize: 16,
-                            color: COLORS.primary,
-                            fontWeight: "bold",
-                            marginLeft: 6
-                        }}>Login</Text>
-                    </Pressable>
                 </View>
             </View>
         </SafeAreaView>
-    )
+    );
 }
 
-export default Signup
+export default SignUpCheck;

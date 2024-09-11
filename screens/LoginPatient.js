@@ -1,95 +1,104 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView,Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import COLORS from '../constants/Colors'; // Ensure this path is correct
 import Button from '../components/Button.js'; // Ensure this path is correct
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
-function LoginCheck() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [isPasswordShown, setIsPasswordShown] = useState(false);
-    const navigation = useNavigation();
+function LoginPatient({ navigation }) {
+    const [patientId, setPatientId] = useState('');
+    const [name, setName] = useState('');
+    const [age, setAge] = useState('');
+    const navigate = useNavigation();
 
     const onLogin = async() => {
         console.log("Login pressed");
-        // navigation.navigate('Main');
+        // navigation.navigate("UserDetails");
+        // Handle login logic here (e.g., authentication with Firebase)
         try{
-            const response = await axios.post(
-                "http://192.168.18.208:3000/api/v1/login",
+            const response = await axios.post("http://192.168.18.208:3000/api/v1/getPatientId",
                 {
-                    email,
-                    password,
+                    PatientId:patientId,
+                    name,
+                    Age:age
                 }
             )
-            console.log("Login successfully",response.data);
-            if(response.data.success==true){
-                Alert.alert("Success! 🎉", "The User has been Login successfully.");
-
+            console.log(response.data)
+            console.log("User id is this -> ",response.data.UserId);
+            
+            try {
+              const response2 = await axios.post("http://192.168.18.208:3000/api/v1/getPatientDetails",
+                { PatientId: response.data.UserId }
+              );
+              console.log("This is the Updated Details of the Patient: ", response2.data.patients);
                 const storeData = async (value) => {
                     try {
                       await AsyncStorage.setItem('token', value);
-                      console.log("saved")
-                      console.warn("saved token",value);
+                      console.log("saved token:",value)
+                      console.warn("saved token:",value)
                       console.log(value)
                     } catch (e) {
                         console.warn("Error while saving userId in async storage",e);
                     }
                 };
-                storeData(response.data.userId);
-
-
-                navigation.navigate("Main");
-
+                storeData(response2.data.patients._id);
+                navigation.navigate('PatientDetails', { item: response2.data.patients });
+            } catch (error) {
+              console.error("Error while fetching patient slot data", error);
+              console.warn("Not able to get Patient slot data");
             }
+    //   };
 
-    
         }
         catch(error){
-            console.error("Error during Sign Up",error);
+            console.error(error);
+            console.log("Error while Login the Patient")
         }
     };
+
 
 
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
                 <Text style={styles.title}>Login</Text>
-                <Text style={styles.subtitle}>Enter your email and password</Text>
+                <Text style={styles.subtitle}>Enter your details to log in</Text>
 
-                {/* Email Input */}
+                {/* Patient ID Input */}
                 <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Email address</Text>
+                    <Text style={styles.label}>Patient ID</Text>
                     <TextInput
-                        placeholder='Enter your email address'
+                        placeholder='Enter your Patient ID'
                         placeholderTextColor="#00000080"
-                        keyboardType='email-address'
-                        onChangeText={(text) => setEmail(text)}
+                        onChangeText={(text) => setPatientId(text)}
                         style={styles.textInput}
                     />
                 </View>
 
-                {/* Password Input */}
+                {/* Name Input */}
                 <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Password</Text>
-                    <View style={styles.passwordContainer}>
-                        <TextInput
-                            placeholder='Enter your password'
-                            placeholderTextColor="#00000080"
-                            secureTextEntry={!isPasswordShown}
-                            onChangeText={(text) => setPassword(text)}
-                            style={styles.textInput}
-                        />
-                        <TouchableOpacity
-                            onPress={() => setIsPasswordShown(!isPasswordShown)}
-                            style={styles.togglePassword}
-                        >
-                            <Text style={styles.togglePasswordText}>{isPasswordShown ? 'Hide' : 'Show'}</Text>
-                        </TouchableOpacity>
-                    </View>
+                    <Text style={styles.label}>Name</Text>
+                    <TextInput
+                        placeholder='Enter your name'
+                        placeholderTextColor="#00000080"
+                        onChangeText={(text) => setName(text)}
+                        style={styles.textInput}
+                    />
                 </View>
+
+                {/* Age Input */}
+                <View style={styles.inputContainer}>
+                    <Text style={styles.label}>Age</Text>
+                    <TextInput
+                        placeholder='Enter your age'
+                        placeholderTextColor="#00000080"
+                        keyboardType='numeric'
+                        onChangeText={(text) => setAge(text)}
+                        style={styles.textInput}
+                    />
+                </View>
+
 
                 {/* Login Button */}
                 <Button
@@ -99,13 +108,6 @@ function LoginCheck() {
                     style={styles.button}
                 />
 
-                {/* Navigate to Sign Up */}
-                <View style={styles.signUpContainer}>
-                    <Text style={styles.signUpText}>Don't have an account? </Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>
-                        <Text style={styles.signUpLink}>Sign Up</Text>
-                    </TouchableOpacity>
-                </View>
             </View>
         </SafeAreaView>
     );
@@ -163,7 +165,7 @@ const styles = StyleSheet.create({
     },
     togglePasswordText: {
         color: COLORS.primary,
-        marginTop:5
+        marginTop: 5,
     },
     button: {
         marginTop: 18,
@@ -185,4 +187,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default LoginCheck;
+export default LoginPatient;

@@ -82,6 +82,7 @@ android {
         applicationId "com.glove_dic"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        resValue "string", "default_web_client_id", "498133522417-i0fsrqheo7oa9tqi1pr8dkvpo75v71pe.apps.googleusercontent.com"
         versionCode 1
         versionName "1.0"
     }

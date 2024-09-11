@@ -1,27 +1,47 @@
-
 {
   "project_info": {
-    "project_number": "321335914339",
-    "project_id": "chat-3859d",
-    "storage_bucket": "chat-3859d.appspot.com"
+    "project_number": "498133522417",
+    "project_id": "elite-academy-427806",
+    "storage_bucket": "elite-academy-427806.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:321335914339:android:1d14f5c9bce2cfc66e2d56",
+        "mobilesdk_app_id": "1:498133522417:android:82de47a1970245a68cd650",
         "android_client_info": {
           "package_name": "com.glove_dic"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "498133522417-0rmdsvbpn9r4k8mtv7ijsdro2biejgme.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.glove_dic",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyD7gKMbAXdHdHd6nWzz5CfIqMUwwhf3RVw"
+          "current_key": "AIzaSyBpnIbOrgh-KkfdrYB5oASnUCG5j1hkhno"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "498133522417-h86onrccvs3lm9ddik6q1fr025o6ludo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "498133522417-algk78gii53o26hi0pp5rn7sdgvhhd9f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.johnkhore.eliteAcademy"
+              }
+            }
+          ]
         }
       }
     }

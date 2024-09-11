@@ -9,15 +9,8 @@ import {
 } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-// import { Login, Signup, Welcome } from './screens/Index.js'
-import Login from './screens/Login.js';
-import Signup from './screens/Signup.js';
 import Welcome from './screens/Welcome.js';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import Home from './screens/Home.js';
 import Icon from 'react-native-vector-icons/Entypo';
-import COLORS from './constants/Colors.js';
 import Techviz from './InsideScreens/Techviz.js';
 import Gloves from './InsideScreens/Gloves.js';
 import DrawerContent from './InsideScreens/DrawerContent.js';
@@ -25,6 +18,13 @@ import {DeviceList} from './components/DeviceList.js';
 import Main from './screens/Main.js';
 import UserDetails from './screens/UserDetails.js';
 import SlotGraph from './InsideScreens/SlotGraph.js';
+import LoginCheck from './screens/LoginCheck.js';
+import SignUpCheck from './screens/SignUpCheck.js';
+import PreWelcome from './screens/PreWelcome.js';
+import LoginPatient from './screens/LoginPatient.js';
+import MaxValuesGraph from './InsideScreens/MaxValuesGraph.js';
+import PatientDetails from './screens/PatientDetails.js';
+
 
 const InsideLayout = () => {
   const InsideStack = createNativeStackNavigator();
@@ -54,14 +54,14 @@ const InsideLayout = () => {
     console.log(userState);
   };
 
-  useEffect(() => {
-    auth().onAuthStateChanged(authChanged);
-    if (userData) {
-      setUserState(true);
-      console.log(userState);
-    }
-    check();
-  }, []);
+  // useEffect(() => {
+  //   auth().onAuthStateChanged(authChanged);
+  //   if (userData) {
+  //     setUserState(true);
+  //     console.log(userState);
+  //   }
+  //   check();
+  // }, []);
 
   return (
     <InsideStack.Navigator
@@ -80,7 +80,7 @@ const InsideLayout = () => {
           <InsideStack.Screen
             name="Home"
             //compoment is home so replace it later on
-            component={Home}
+            component={Main}
             options={{
               headerLeft: () => {
                 return (
@@ -101,32 +101,60 @@ const InsideLayout = () => {
       ) : (
         <>
           <InsideStack.Screen
-            name="Welcome"
-            component={Welcome}
-            options={{
-              headerShown: false,
-            }}
+          name="PreWelcome"
+          component={PreWelcome}
+          options={{
+            headerShown: false,
+          }}
           />
         </>
       )}
+      <InsideStack.Screen
+        name="Welcome"
+        component={Welcome}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <InsideStack.Screen
+        name="LoginScreen"
+        component={LoginCheck}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <InsideStack.Screen
+        name="LoginPatient"
+        component={LoginPatient}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <InsideStack.Screen
+        name="PatientDetails"
+        component={PatientDetails}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <InsideStack.Screen
+        name="SignUpScreen"
+        component={SignUpCheck}
+        options={{
+          headerShown: false,
+        }}
+      />
 
-      <InsideStack.Screen
-        name="Login"
-        component={Login}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <InsideStack.Screen
-        name="Signup"
-        component={Signup}
-        options={{
-          headerShown: false,
-        }}
-      />
       <InsideStack.Screen
         name="Main"
         component={Main}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <InsideStack.Screen
+        name="MaxValuesGraph"
+        component={MaxValuesGraph}
         options={{
           headerShown: false,
         }}

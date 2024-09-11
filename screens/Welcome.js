@@ -79,12 +79,11 @@ function Welcome({ navigation }) {
                     />
                 </View>
 
-                {/* content  */}
 
                 <View style={{
                     paddingHorizontal: 22,
                     position: "absolute",
-                    top: 400,
+                    top: 380,
                     width: "100%"
                 }}>
                     <Text style={{
@@ -112,9 +111,11 @@ function Welcome({ navigation }) {
 
                     <Button
                         title="Join Now"
-                        onPress={() => navigation.navigate('Signup')}
+                        // onPress={() => navigation.navigate('Signup')}
+                        onPress={() => navigation.navigate('SignUpScreen')}
+                        // SignUpScreen
                         style={{
-                            marginTop: 22,
+                            // marginTop: 22,
                             width: "100%",
 
                         }}
@@ -122,7 +123,7 @@ function Welcome({ navigation }) {
 
                     <View style={{
                         flexDirection: "row",
-                        marginTop: 12,
+                        marginTop: 10,
                         justifyContent: "center"
                     }}>
                         <Text style={{
@@ -130,7 +131,8 @@ function Welcome({ navigation }) {
                             color: COLORS.white
                         }}>Already have an account ?</Text>
                         <Pressable
-                            onPress={() => navigation.navigate("Login")}
+                            // onPress={() => navigation.navigate("Login")}
+                            onPress={() => navigation.navigate("LoginScreen")}
                         >
                             <Text style={{
                                 fontSize: 16,
@@ -139,7 +141,6 @@ function Welcome({ navigation }) {
                                 marginLeft: 4
                             }}>Login</Text>
                         </Pressable>
-
                     </View>
                 </View>
             </View>
